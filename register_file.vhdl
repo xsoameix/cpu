@@ -10,39 +10,46 @@ entity register_file is port (
 
     -- write
     sel_c          : in  std_logic_vector(1 downto 0);
-    c              : in  std_logic_vector(15 downto 0));
+    c              : in  std_logic_vector(15 downto 0);
+
+    r0, r1, r2, r3 : out std_logic_vector(15 downto 0));
 end register_file;
 
 architecture register_file_arch of register_file is
-    signal r0 : std_logic_vector(15 downto 0);
-    signal r1 : std_logic_vector(15 downto 0);
-    signal r2 : std_logic_vector(15 downto 0);
-    signal r3 : std_logic_vector(15 downto 0);
+    signal r0_internal : std_logic_vector(15 downto 0);
+    signal r1_internal : std_logic_vector(15 downto 0);
+    signal r2_internal : std_logic_vector(15 downto 0);
+    signal r3_internal : std_logic_vector(15 downto 0);
 begin
+    r0 <= r0_internal;
+    r1 <= r1_internal;
+    r2 <= r2_internal;
+    r3 <= r3_internal;
     process (clk) is
     begin
         if reset = '1' then
-            r0 <= x"0000";
-            r1 <= x"0000";
-            r2 <= x"0000";
-            r3 <= x"0000";
+            r0_internal <= x"0000";
+            r1_internal <= x"0000";
+            r2_internal <= x"0000";
+            r3_internal <= x"0000";
         elsif clk'event and clk = '1' and en = '1' then
             case sel_c is
-            when "00" => r0 <= c;
-            when "01" => r1 <= c;
-            when "10" => r2 <= c;
-            when "11" => r3 <= c;
+            when "00" => r0_internal <= c;
+            when "01" => r1_internal <= c;
+            when "10" => r2_internal <= c;
+            when "11" => r3_internal <= c;
+            when others =>
             end case;
         end if;
     end process;
     with sel_a select
-        a <= r0 when "00",
-             r1 when "01",
-             r2 when "10",
-             r3 when others;
+        a <= r0_internal when "00",
+             r1_internal when "01",
+             r2_internal when "10",
+             r3_internal when others;
     with sel_b select
-        b <= r0 when "00",
-             r1 when "01",
-             r2 when "10",
-             r3 when others;
+        b <= r0_internal when "00",
+             r1_internal when "01",
+             r2_internal when "10",
+             r3_internal when others;
 end register_file_arch;

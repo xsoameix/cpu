@@ -1,7 +1,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity adder_16bit is port (
+entity alu is port (
+    m    : in  std_logic;
+    sel  : in  std_logic_vector(3 downto 0);
+
     a, b : in  std_logic_vector(15 downto 0);
     cin  : in  std_logic;
 
@@ -18,9 +21,9 @@ entity adder_16bit is port (
 
     -- zero flag
     z    : out std_logic);
-end adder_16bit;
+end alu;
 
-architecture adder_16bit_arch of adder_16bit is
+architecture alu_arch of alu is
     component block_carry_lookahead_generator is port (
         cin    : in  std_logic;
         g, p   : in  std_logic_vector(3 downto 0);
@@ -29,7 +32,9 @@ architecture adder_16bit_arch of adder_16bit is
         go, po : out std_logic);
     end component;
 
-    component adder_4bit is port (
+    component alu_74181 is port (
+        m    : in  std_logic;
+        sel  : in  std_logic_vector(3 downto 0);
         a, b : in  std_logic_vector(3 downto 0);
         cin  : in  std_logic;
         g, p : out std_logic;
@@ -48,28 +53,36 @@ begin
         p => p,
         c => c,
         co => co);
-    adder_4bit_0 : adder_4bit port map (
+    alu_74181_0 : alu_74181 port map(
+        m => m,
+        sel => sel,
         a => a(3 downto 0),
         b => b(3 downto 0),
         cin => cin,
         g => g(0),
         p => p(0),
         sum => sum_internal(3 downto 0));
-    adder_4bit_1 : adder_4bit port map (
+    alu_74181_1 : alu_74181 port map(
+        m => m,
+        sel => sel,
         a => a(7 downto 4),
         b => b(7 downto 4),
         cin => c(0),
         g => g(1),
         p => p(1),
         sum => sum_internal(7 downto 4));
-    adder_4bit_2 : adder_4bit port map (
+    alu_74181_2 : alu_74181 port map(
+        m => m,
+        sel => sel,
         a => a(11 downto 8),
         b => b(11 downto 8),
         cin => c(1),
         g => g(2),
         p => p(2),
         sum => sum_internal(11 downto 8));
-    adder_4bit_3 : adder_4bit port map (
+    alu_74181_3 : alu_74181 port map(
+        m => m,
+        sel => sel,
         a => a(15 downto 12),
         b => b(15 downto 12),
         cin => c(2),
@@ -84,4 +97,4 @@ begin
          sum_internal(8) or sum_internal(9) or sum_internal(10) or sum_internal(11) or
          sum_internal(12) or sum_internal(13) or sum_internal(14) or sum_internal(15));
     sum <= sum_internal;
-end adder_16bit_arch;
+end alu_arch;
