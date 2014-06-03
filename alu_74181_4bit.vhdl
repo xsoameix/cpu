@@ -1,7 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use work.lib.all;
 
-entity alu_74181 is port (
+entity alu_74181_4bit is port (
     -- mode:
     -- 0 logic
     -- 1 arith
@@ -16,18 +17,9 @@ entity alu_74181 is port (
 
     -- overflow flag
     v    : out std_logic);
-end alu_74181;
+end alu_74181_4bit;
 
-architecture alu_74181_arch of alu_74181 is
-    function repeat(b : std_logic; n : natural) return std_logic_vector is
-    variable result : std_logic_vector(1 to n);
-    begin
-        for i in 1 to n loop
-            result(i) := b;
-        end loop;
-        return result;
-    end function repeat;
-
+architecture alu_74181_4bit_arch of alu_74181_4bit is
     component block_carry_lookahead_generator is port (
         cin    : in  std_logic;
         g, p   : in  std_logic_vector(3 downto 0);
@@ -58,4 +50,4 @@ begin
            p_internal xor
            ((c & cin) and repeat(m, 4));
     v <= co xor c(2);
-end alu_74181_arch;
+end alu_74181_4bit_arch;

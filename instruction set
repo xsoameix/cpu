@@ -1,0 +1,31 @@
+mov [0xABC], r0
+mov [r0], r1
+mov r0, [0xABC]
+mov r1, [r0]
+mul r0, r1, r2
+add r0, r1, r2
+sub r0, r1, r2
+and r0, r1, r2
+or  r0, r1, r2
+xor r0, r1, r2
+nor r0, r1, r2
+not r0, r1
+nand r0, r1, r2
+xnor r0, r1, r2
+shl r0
+shr r0
+cmp r0, r1
+jmp 0xABC
+jmp r0
+jge 0xABC
+jge r0
+jle 0xABC
+jle r0
+jg 0xABC
+jg r0
+jl 0xABC
+jl r0
+je 0xABC
+je r0
+push r0
+pop r0

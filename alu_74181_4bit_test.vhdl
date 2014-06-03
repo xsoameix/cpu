@@ -2,16 +2,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 
-entity alu_74181_test is port (
+entity alu_74181_4bit_test is port (
     sum  : out std_logic_vector(3 downto 0);
     co   : out std_logic;
     v    : out std_logic;
     s    : out std_logic;
     z    : out std_logic);
-end alu_74181_test;
+end alu_74181_4bit_test;
 
-architecture alu_74181_test_arch of alu_74181_test is
-    component alu_74181 is port (
+architecture alu_74181_4bit_test_arch of alu_74181_4bit_test is
+    component alu_74181_4bit is port (
         m    : in  std_logic;
         sel  : in  std_logic_vector(3 downto 0);
         a, b : in  std_logic_vector(3 downto 0);
@@ -31,7 +31,7 @@ architecture alu_74181_test_arch of alu_74181_test is
     signal a, b : std_logic_vector(3 downto 0);
     signal cin  : std_logic;
 begin
-    alu_74181_0 : alu_74181 port map (
+    alu_74181_4bit_0 : alu_74181_4bit port map (
         m => m,
         sel => sel,
         a => a,
@@ -53,4 +53,4 @@ begin
             a <= a + "0001";
         end if;
     end process;
-end alu_74181_test_arch;
+end alu_74181_4bit_test_arch;
