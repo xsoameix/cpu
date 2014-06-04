@@ -3,9 +3,10 @@ use ieee.std_logic_1164.all;
 
 entity alu_sign_logic is port (
     clk, reset      : in  std_logic;
-    m               : in  std_logic;
-    sel             : in  std_logic_vector(1 downto 0);
-    c               : in  std_logic_vector(1 downto 0);
+    do_lock         : in  std_logic;
+    do_extend       : in  std_logic;
+    do_add          : in  std_logic;
+    do_sub          : in  std_logic;
     multiplier_0    : in  std_logic;
     multiplier_15   : in  std_logic;
     multiplicand_15 : in  std_logic;
@@ -14,15 +15,7 @@ end alu_sign_logic;
 
 architecture alu_sign_logic_arch of alu_sign_logic is
     signal sign      : std_logic;
-    signal do_lock   : std_logic;
-    signal do_extend : std_logic;
-    signal do_add    : std_logic;
-    signal do_sub    : std_logic;
 begin
-    do_lock   <= not(m) and not(sel(1)) and not(sel(0)) and (c(1) or c(0));
-    do_extend <=     m  and not(sel(1)) and not(sel(0)) and  c(1);
-    do_add    <=     m  and not(sel(1)) and     sel(0);
-    do_sub    <=     m  and     sel(1)  and not(sel(0));
     process (clk) is
     begin
         if reset = '1' then

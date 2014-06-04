@@ -14,17 +14,16 @@ entity alu_test is port (
     alu_count : out std_logic_vector(3 downto 0);
     mlier : out std_logic_vector(15 downto 0);
     mcand : out std_logic_vector(15 downto 0);
-    accum : out std_logic_vector(15 downto 0));
+    accum : out std_logic_vector(15 downto 0);
+    alu_a_1 : out std_logic_vector(15 downto 0);
+    alu_b_1 : out std_logic_vector(15 downto 0));
 end alu_test;
 
 architecture alu_test_arch of alu_test is
     component alu is port (
         clk, reset : in  std_logic;
-        c          : in  std_logic_vector(2 downto 0);
-        m          : in  std_logic;
-        sel        : in  std_logic_vector(3 downto 0);
+        control    : in  std_logic_vector(19 downto 0);
         a, b       : in  std_logic_vector(15 downto 0);
-        cin        : in  std_logic;
         sum        : out std_logic_vector(15 downto 0);
         co         : out std_logic;
         v          : out std_logic;
@@ -36,7 +35,9 @@ architecture alu_test_arch of alu_test is
         count : out std_logic_vector(3 downto 0);
         mlier : out std_logic_vector(15 downto 0);
         mcand : out std_logic_vector(15 downto 0);
-        accum : out std_logic_vector(15 downto 0));
+        accum : out std_logic_vector(15 downto 0);
+        alu_a_1 : out std_logic_vector(15 downto 0);
+        alu_b_1 : out std_logic_vector(15 downto 0));
     end component;
 
     signal clk   : std_logic := '0';
@@ -45,24 +46,18 @@ architecture alu_test_arch of alu_test is
     signal count : std_logic_vector(15 downto 0) := x"0000";
     signal offset : std_logic_vector(15 downto 0) := x"0001";
 
-    signal c       : std_logic_vector(2 downto 0);
-    signal m       : std_logic;
-    signal sel     : std_logic_vector(3 downto 0);
+    signal control : std_logic_vector(19 downto 0);
 
     signal a, b    : std_logic_vector(15 downto 0);
-    signal cin     : std_logic;
 
     signal finined_internal : std_logic;
 begin
     alu_0 : alu port map (
         clk => clk,
         reset => reset,
-        c => c,
-        m => m,
-        sel => sel,
+        control => control,
         a => a,
         b => b,
-        cin => cin,
         sum => sum,
         co => co,
         v => v,
@@ -74,95 +69,63 @@ begin
         count => alu_count,
         mlier => mlier,
         mcand => mcand,
-        accum => accum);
+        accum => accum,
+        alu_a_1 => alu_a_1,
+        alu_b_1 => alu_b_1
+    );
     clk   <= not clk after clk_period / 2;
     reset <= '0'     after clk_period + clk_period / 2;
     process (clk) is
     begin
         if reset = '1' then
-            c <= "001";
-            m <= '0';
-            sel <= "0000";
+            control <= "00000000000000000000";
             a <= x"0000";
             b <= x"0000";
-            cin <= '0';
         elsif clk'event and clk = '1' then
             case count is
             when x"0002" =>
                 -- add
-                m <= '1';
-                sel <= "0110";
-                c <= "001";
+                control <= "00100000000000000000";
                 a <= x"0010";
                 b <= x"0011";
-                cin <= '0';
             when x"0003" =>
-                c <= "010";
+                control <= "00000000000000000100";
             when x"0004" =>
                 -- sub
-                m <= '1';
-                sel <= "1001";
-                c <= "001";
+                control <= "00010000000000000000";
                 a <= x"0101";
                 b <= x"0110";
-                cin <= '1';
             when x"0005" =>
-                c <= "010";
-            when x"0007" =>
+                control <= "00000000000000000100";
+            when x"0008" =>
                 -- mul (reset)
-                m <= '0';
-                sel <= "0011";
-                cin <= '0';
-                c <= "001";
-
+                control <= "00000000000000010000";
                 a <= x"FFFF";
                 b <= x"0002";
-            when x"0008" =>
+            when x"0009" =>
                 -- mul (add)
                 offset <= x"0001";
-
-                m <= '1';
-                sel <= "0110";
-                cin <= '0';
-                c <= "010";
-            when x"0009" =>
-                -- mul (shift, count + 1)
-                m <= '1';
-                sel <= "0110";
-                c <= "100";
-                cin <= '0';
+                control <= "00000000000001000000";
             when x"000A" =>
-                m <= '0';
-                sel <= "0000";
-                cin <= '0';
-                c <= "010";
+                -- mul (shift, count + 1)
+                control <= "00000000000000000001";
+            when x"000B" =>
+                control <= "00000000000000000100";
                 if finined_internal = '0' then
                     offset <= x"FFFE";
                 end if;
-            when x"000B" =>
-                -- mul (sub)
-                m <= '1';
-                sel <= "1001";
-                cin <= '1';
-                c <= "010";
             when x"000C" =>
-                -- mul (shift, count + 1)
-                m <= '0';
-                sel <= "0000";
-                cin <= '0';
-                c <= "100";
+                -- mul (sub)
+                control <= "00000000000000100000";
             when x"000D" =>
-                -- mul (product high bits)
-                c <= "010";
-                m <= '0';
-                sel <= "0000";
-                cin <= '0';
+                -- mul (shift, count + 1)
+                control <= "00000000000000000001";
             when x"000E" =>
+                -- mul (product high bits)
+                control <= "00000000000000000100";
+            when x"000F" =>
                 -- mul (product low bits)
-                c <= "001";
-                m <= '0';
-                sel <= "0000";
-                cin <= '0';
+                control <= "00000000000000001000";
             when others =>
             end case;
         elsif clk'event and clk = '0' then
