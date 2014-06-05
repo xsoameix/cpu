@@ -79,51 +79,116 @@ begin
     begin
         if reset = '1' then
             control <= "00000000000000000000";
-            a <= x"0000";
-            b <= x"0000";
+            a <= x"FFFF";
+            b <= x"0002";
         elsif clk'event and clk = '1' then
             case count is
             when x"0002" =>
-                -- add
-                control <= "00100000000000000000";
-                a <= x"0010";
-                b <= x"0011";
+                -- and
+                control <= "00000100000000000000";
             when x"0003" =>
                 control <= "00000000000000000100";
             when x"0004" =>
-                -- sub
-                control <= "00010000000000000000";
-                a <= x"0101";
-                b <= x"0110";
+                -- or
+                control <= "00000001000000000000";
             when x"0005" =>
                 control <= "00000000000000000100";
+            when x"0006" =>
+                -- xor
+                control <= "00000000100000000000";
+            when x"0007" =>
+                control <= "00000000000000000100";
             when x"0008" =>
+                -- nxor
+                control <= "00000000010000000000";
+            when x"0009" =>
+                control <= "00000000000000000100";
+            when x"000A" =>
+                -- nor
+                control <= "00000000001000000000";
+            when x"000B" =>
+                control <= "00000000000000000100";
+            when x"000C" =>
+                -- nand
+                control <= "00000000000100000000";
+            when x"000D" =>
+                control <= "00000000000000000100";
+            when x"000E" =>
+                -- not
+                control <= "00000000000010000000";
+            when x"000F" =>
+                control <= "00000000000000000100";
+            when x"0010" =>
+                -- shl
+                control <= "01000000000000000000";
+            when x"0011" =>
+                control <= "00000000000000000100";
+            when x"0012" =>
+                -- sal
+                control <= "01000000000000000000";
+            when x"0013" =>
+                control <= "00000000000000000100";
+            when x"0014" =>
+                -- shr
+                control <= "00000000000000001000";
+            when x"0015" =>
+                control <= "00000000000000000001";
+            when x"0016" =>
+                control <= "00000000000000000100";
+            when x"0017" =>
+                -- sar
+                control <= "00000000000000001000";
+            when x"0018" =>
+                control <= "00000000000000000010";
+            when x"0019" =>
+                control <= "00000000000000000001";
+            when x"001A" =>
+                control <= "00000000000000000100";
+            when x"001B" =>
+                -- inc
+                control <= "10000000000000000000";
+            when x"001C" =>
+                control <= "00000000000000000100";
+            when x"001D" =>
+                -- dec
+                control <= "00001000000000000000";
+            when x"001E" =>
+                control <= "00000000000000000100";
+            when x"001F" =>
+                -- add
+                control <= "00100000000000000000";
+            when x"0020" =>
+                control <= "00000000000000000100";
+            when x"0021" =>
+                -- sub
+                control <= "00010000000000000000";
+            when x"0022" =>
+                control <= "00000000000000000100";
+            when x"0023" =>
                 -- mul (reset)
                 control <= "00000000000000010000";
-                a <= x"FFFF";
-                b <= x"0002";
-            when x"0009" =>
+            when x"0024" =>
                 -- mul (add)
                 offset <= x"0001";
                 control <= "00000000000001000000";
-            when x"000A" =>
+            when x"0025" =>
                 -- mul (shift, count + 1)
                 control <= "00000000000000000001";
-            when x"000B" =>
+            when x"0026" =>
                 control <= "00000000000000000100";
                 if finined_internal = '0' then
                     offset <= x"FFFE";
                 end if;
-            when x"000C" =>
+            when x"0027" =>
                 -- mul (sub)
                 control <= "00000000000000100000";
-            when x"000D" =>
+            when x"0028" =>
                 -- mul (shift, count + 1)
                 control <= "00000000000000000001";
-            when x"000E" =>
+            when x"0029" =>
                 -- mul (product high bits)
                 control <= "00000000000000000100";
-            when x"000F" =>
+            when x"002A" =>
                 -- mul (product low bits)
                 control <= "00000000000000001000";
             when others =>

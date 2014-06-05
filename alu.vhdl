@@ -107,6 +107,7 @@ architecture alu_arch of alu is
     signal accumulator_shift    : std_logic_vector(15 downto 0);
     signal multiplier_0         : std_logic_vector(15 downto 0);
     signal multiplier_shift     : std_logic_vector(15 downto 0);
+    signal multiplier_a         : std_logic;
     signal multiplier_lock      : std_logic;
     signal multiplicand_0       : std_logic_vector(15 downto 0);
     signal alu_a_0              : std_logic_vector(15 downto 0);
@@ -179,10 +180,11 @@ begin
         if_false => alu_sum,
         output => accumulator_0);
 
+    multiplier_a <= do_AC_clr or do_shr;
     multiplier_lock <= do_AC_add or do_AC_sub or do_cmp;
     multiplier_shift <= accumulator(0) & multiplier(15 downto 1);
     multiplier_case : case3_16bit port map (
-        if_a => do_AC_clr,
+        if_a => multiplier_a,
         a => a,
         if_b => do_shift,
         b => multiplier_shift,
